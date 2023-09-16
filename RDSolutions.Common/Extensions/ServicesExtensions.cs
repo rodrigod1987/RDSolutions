@@ -12,7 +12,7 @@ namespace RDSolutions.Common.Extensions
             //Acessar todas as dlls procurando por aquelas que implementam IRegistrable e chamar o m�todo Register passando 
             //o argumento services. Com isso consigo isolar em cada um dos m�dulos aquilo que eu devo injetar como depend�ncia.
             var assemblies = Assembly
-                .GetExecutingAssembly()
+                .GetCallingAssembly()
                 .GetReferencedAssemblies()
                 .Where(x => x.Name.StartsWith(namespaceStartWith));
 
