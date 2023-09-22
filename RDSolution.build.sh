@@ -13,13 +13,13 @@ REPOSITORY="\\RDSolutions.Repository\\RDSolutions.Repository.csproj"
 echo $REPOSITORY
 SERVICE="\\RDSolutions.Service\\RDSolutions.Service.csproj"
 echo $SERVICE
-COMMOM_PACK_NAME="RDSolutions.Common.1.4.0.nupkg"
+COMMOM_PACK_NAME="RDSolutions.Common.$1.nupkg"
 COMMOM_PACK="$BIN_PATH$COMMOM_PACK_NAME"
 echo $COMMOM_PACK
-REPOSITORY_PACK_NAME="RDSolutions.Repository.1.4.0.nupkg"
+REPOSITORY_PACK_NAME="RDSolutions.Repository.$1.nupkg"
 REPOSITORY_PACK="$BIN_PATH$REPOSITORY_PACK_NAME"
 echo $REPOSITORY_PACK
-SERVICE_PACK_NAME="RDSolutions.Service.1.4.0.nupkg"
+SERVICE_PACK_NAME="RDSolutions.Service.$1.nupkg"
 SERVICE_PACK="$BIN_PATH$SERVICE_PACK_NAME"
 echo $SERVICE_PACK
 
@@ -29,9 +29,9 @@ dotnet build "$BASE_PATH$REPOSITORY"
 dotnet build "$BASE_PATH$SERVICE"
 
 echo "----------Running pack"
-dotnet pack "$BASE_PATH$COMMOM"
-dotnet pack "$BASE_PATH$REPOSITORY"
-dotnet pack "$BASE_PATH$SERVICE"
+dotnet pack -p:PackageVersion=$1 "$BASE_PATH$COMMOM"
+dotnet pack -p:PackageVersion=$1 "$BASE_PATH$REPOSITORY"
+dotnet pack -p:PackageVersion=$1 "$BASE_PATH$SERVICE"
 
 echo "----------Adding packages to local repository"
 echo "nuget add "$COMMOM_PACK" -Source "$SOURCE""
