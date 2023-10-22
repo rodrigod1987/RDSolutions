@@ -44,7 +44,7 @@ namespace RDSolutions.Impl.Repository
         public TEntity Insert(TEntity entity)
         {
             DatabaseContext.Entry(entity).State = EntityState.Added;
-            var count = DatabaseContext.SaveChanges();
+            DatabaseContext.SaveChanges();
 
             return entity;
         }
@@ -95,7 +95,7 @@ namespace RDSolutions.Impl.Repository
             ThrowIfCancellationRequested(cancellationToken);
 
             DatabaseContext.Entry(entity).State = EntityState.Added;
-            var count = await DatabaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
 
             return entity;
         }
@@ -105,7 +105,7 @@ namespace RDSolutions.Impl.Repository
             ThrowIfCancellationRequested(cancellationToken);
 
             DatabaseContext.Entry(entity).State = EntityState.Modified;
-            var count = await DatabaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
 
             return entity;
         }
@@ -115,12 +115,12 @@ namespace RDSolutions.Impl.Repository
             ThrowIfCancellationRequested(cancellationToken);
 
             DatabaseContext.Set<TEntity>().Remove(entity);
-            var count = await DatabaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
         }
 
         private void ThrowIfCancellationRequested(CancellationToken cancellationToken)
         {
-            if (!cancellationToken.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
             {
                 throw new TaskCanceledException();
             }
