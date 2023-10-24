@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -14,7 +15,8 @@ namespace RDSolutions.Common.Extensions
             var assemblies = Assembly
                 .GetCallingAssembly()
                 .GetReferencedAssemblies()
-                .Where(x => x.Name.StartsWith(namespaceStartWith));
+                .Where(x => x.Name.StartsWith(namespaceStartWith))
+                .ToList();
 
             foreach (var assemblyName in assemblies)
             {
@@ -28,8 +30,24 @@ namespace RDSolutions.Common.Extensions
                 {
                     if (registrable.GetInterface(nameof(IRegistrable)) != null)
                     {
-                        var myClass = Activator.CreateInstance(registrable) as IRegistrable;
-                        myClass.Register(services);
+                        var constructors = registrable.GetConstructors();
+                        if (constructors.Any())
+                        {
+                            foreach (var constructor in constructors)
+                            {
+                                List<object> parameters = new List<object>();
+                                var args = constructor.GetParameters();
+
+                                foreach (var arg in args)
+                                {
+                                    var argType = arg.ParameterType;
+                                    parameters.Add(services.Where(s => s.ServiceType.Equals(argType)).FirstOrDefault().ImplementationInstance);
+                                }
+
+                                var myClass = Activator.CreateInstance(registrable, parameters.ToArray()) as IRegistrable;
+                                myClass.Register(services);
+                            }
+                        }
                     }
                 }
             }
