@@ -47,7 +47,9 @@ namespace RDSolutions.Common.Extensions
                                 foreach (var arg in args)
                                 {
                                     var argType = arg.ParameterType;
-                                    parameters.Add(services.Where(s => s.ServiceType.Equals(argType)).FirstOrDefault().ImplementationInstance);
+                                    var service = services.Where(s => s.ServiceType.Equals(argType)).FirstOrDefault();
+                                    var implementation = service.ImplementationFactory ?? service.ImplementationInstance ?? service.ImplementationType;
+                                    parameters.Add(implementation);
                                 }
 
                                 var myClass = Activator.CreateInstance(registrable, parameters.ToArray()) as IRegistrable;
