@@ -12,17 +12,11 @@ namespace RDSolutions.Common.Extensions
         {
             //Acessar todas as dlls procurando por aquelas que implementam IRegistrable e chamar o m�todo Register passando 
             //o argumento services. Com isso consigo isolar em cada um dos m�dulos aquilo que eu devo injetar como depend�ncia.
-            var callingAssembly = Assembly
-                .GetCallingAssembly()
-                .GetName();
-
             var assemblies = Assembly
                 .GetCallingAssembly()
                 .GetReferencedAssemblies()
                 .Where(x => x.Name.StartsWith(namespaceStartWith))
                 .ToList();
-
-            assemblies.Add(callingAssembly);
 
             foreach (var assemblyName in assemblies)
             {
@@ -36,30 +30,20 @@ namespace RDSolutions.Common.Extensions
                 {
                     if (registrable.GetInterface(nameof(IRegistrable)) != null)
                     {
-                        var constructors = registrable.GetConstructors();
-                        if (constructors.Any())
+                        try
                         {
-                            foreach (var constructor in constructors)
-                            {
-                                List<object> parameters = new List<object>();
-                                var args = constructor.GetParameters();
-
-                                foreach (var arg in args)
-                                {
-                                    var argType = arg.ParameterType;
-                                    var service = services.Where(s => s.ServiceType.Equals(argType)).FirstOrDefault();
-                                    var implementation = service.ImplementationFactory ?? service.ImplementationInstance ?? service.ImplementationType;
-                                    parameters.Add(implementation);
-                                }
-
-                                var myClass = Activator.CreateInstance(registrable, parameters.ToArray()) as IRegistrable;
-                                myClass.Register(services);
-                            }
+                            var myClass = Activator.CreateInstance(registrable) as IRegistrable;
+                            myClass.Register(services);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine(string.Format("The type {0} should not have a parametrized constructor.", registrable.FullName));
+                            throw;
                         }
                     }
                 }
             }
-
+            
             return services;
         }
     }

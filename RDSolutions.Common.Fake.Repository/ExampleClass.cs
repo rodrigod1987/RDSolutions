@@ -1,4 +1,4 @@
-﻿using RDSolutions.Common.Fake.WithConstructor.Constructor;
+﻿using RDSolutions.Common.Fake.WithoutConstructor.NoConstructor;
 
 namespace RDSolutions.Common.Fake
 {
