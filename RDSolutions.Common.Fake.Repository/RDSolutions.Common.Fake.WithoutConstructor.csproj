@@ -2,11 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <BaseOutputPath>C:\RDSolutions\Bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RDSolutions.Common\RDSolutions.Common.csproj" />
+    <ProjectReference Include="..\RDsolutions.Common.Fake\RDSolutions.Common.Fake.WithConstructor.csproj" />
   </ItemGroup>
 
 </Project>

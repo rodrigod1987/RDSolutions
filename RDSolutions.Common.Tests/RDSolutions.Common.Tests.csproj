@@ -11,10 +11,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RDsolutions.Common.Fake\RDSolutions.Common.Fake.csproj" />
+    <ProjectReference Include="..\RDSolutions.Common.Fake.Repository\RDSolutions.Common.Fake.WithoutConstructor.csproj" />
+    <ProjectReference Include="..\RDsolutions.Common.Fake\RDSolutions.Common.Fake.WithConstructor.csproj" />
     <ProjectReference Include="..\RDSolutions.Common\RDSolutions.Common.csproj" />
   </ItemGroup>
 

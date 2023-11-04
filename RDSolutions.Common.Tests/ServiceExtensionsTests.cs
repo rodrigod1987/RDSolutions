@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDSolutions.Common.Extensions;
-using RDSolutions.Common.Fake;
-using System;
+using WithoutConstructor = RDSolutions.Common.Fake.WithoutConstructor.NoConstructor;
+using WithConstructor = RDSolutions.Common.Fake.WithConstructor.Constructor;
 using System.Linq;
+using System;
+using Shouldly;
 
 namespace RDSolutions.Common.Tests
 {
@@ -11,15 +13,26 @@ namespace RDSolutions.Common.Tests
     public class ServiceExtensionsTests
     {
         [TestMethod]
-        public void ServiceExtensionsTest()
+        public void ServiceExtensionsTestWithoutConstructor()
         {
             var serviceCollection = new ServiceCollection() as IServiceCollection;
-            var configuration = new Configuration { MyProperty = 10 };
+            var configuration = new WithoutConstructor.Configuration { MyProperty = 10 };
 
             serviceCollection.AddSingleton(configuration);
-            serviceCollection.RegisterComponents("RDSolutions");
+            serviceCollection.RegisterComponents("RDSolutions.Common.Fake.WithoutConstructor");
 
-            Assert.AreEqual(2, serviceCollection.Count());
+            serviceCollection.Count.ShouldBe(2);
+        }
+
+        [TestMethod]
+        public void ServiceExtensionsTestWithConstructor()
+        {
+            var serviceCollection = new ServiceCollection() as IServiceCollection;
+            var configuration = new WithConstructor.Configuration { MyProperty = 10 };
+
+            serviceCollection.AddSingleton(configuration);
+            
+            Should.Throw<Exception>(() => serviceCollection.RegisterComponents("RDSolutions.Common.Fake.WithConstructor"));
         }
     }
 }
