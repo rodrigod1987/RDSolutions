@@ -1,6 +1,6 @@
-﻿namespace RDSolutions.Repository.Model.Base
+﻿namespace RDSolutions.Repository.Model.Base;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-    }
 }
+

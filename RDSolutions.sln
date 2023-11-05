@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDSolutions.Common.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDSolutions.Common.Fake.WithConstructor", "RDsolutions.Common.Fake\RDSolutions.Common.Fake.WithConstructor.csproj", "{62619168-5A2D-4D65-AD5D-2E8C2B8AE629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDSolutions.Common.Fake.WithoutConstructor", "RDSolutions.Common.Fake.Repository\RDSolutions.Common.Fake.WithoutConstructor.csproj", "{3B962436-2144-4906-BFEA-8C36467EC1FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDSolutions.Common.Fake.WithoutConstructor", "RDSolutions.Common.Fake.Repository\RDSolutions.Common.Fake.WithoutConstructor.csproj", "{3B962436-2144-4906-BFEA-8C36467EC1FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

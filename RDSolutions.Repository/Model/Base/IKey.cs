@@ -1,7 +1,7 @@
-﻿namespace RDSolutions.Repository.Model.Base
+﻿namespace RDSolutions.Repository.Model.Base;
+
+public interface IKey<TKey>
 {
-    public interface IKey<TKey>
-    {
-        public TKey Id { get; set; }
-    }
+    public TKey Id { get; set; }
 }
+

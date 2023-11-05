@@ -1,7 +1,6 @@
-﻿namespace RDSolutions.Common.Fake.WithoutConstructor.NoConstructor
+﻿namespace RDSolutions.Common.Fake.WithoutConstructor.NoConstructor;
+
+public interface ICacheConfiguration
 {
-    public interface ICacheConfiguration
-    {
-        int MyProperty { get; set; }
-    }
+    int MyProperty { get; set; }
 }

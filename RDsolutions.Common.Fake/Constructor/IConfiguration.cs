@@ -1,7 +1,6 @@
-﻿namespace RDSolutions.Common.Fake.WithConstructor.Constructor
+﻿namespace RDSolutions.Common.Fake.WithConstructor.Constructor;
+
+public interface IConfiguration
 {
-    public interface IConfiguration
-    {
-        int MyProperty { get; set; }
-    }
+    int MyProperty { get; set; }
 }
