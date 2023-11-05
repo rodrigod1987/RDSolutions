@@ -1,7 +1,6 @@
-﻿namespace RDSolutions.Common.Fake.WithConstructor.Constructor
+﻿namespace RDSolutions.Common.Fake.WithConstructor.Constructor;
+
+public class CacheConfiguration : ICacheConfiguration
 {
-    public class CacheConfiguration : ICacheConfiguration
-    {
-        public int MyProperty { get; set; }
-    }
+    public int MyProperty { get; set; }
 }
