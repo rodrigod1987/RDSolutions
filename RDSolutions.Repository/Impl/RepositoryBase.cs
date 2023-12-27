@@ -41,31 +41,38 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
         return entity;
     }
 
-    public TEntity Insert(TEntity entity)
+    public TEntity Insert(TEntity entity, params string[] navigationProperties)
     {
-        DatabaseContext.Entry(entity).State = EntityState.Added;
+        IncludeNavigationProperties(navigationProperties);
+
+        DatabaseContext.Set<TEntity>().Add(entity);
         DatabaseContext.SaveChanges();
 
         return entity;
     }
 
-    public TEntity Update(TEntity entity)
+    public TEntity Update(TEntity entity, params string[] navigationProperties)
     {
-        DatabaseContext.Entry(entity).State = EntityState.Modified;
-        var count = DatabaseContext.SaveChanges();
+        IncludeNavigationProperties(navigationProperties);
+
+        DatabaseContext.Set<TEntity>().Update(entity);
+        DatabaseContext.SaveChanges();
 
         return entity;
     }
 
-    public void Remove(TEntity entity)
+    public void Remove(TEntity entity, params string[] navigationProperties)
     {
+        IncludeNavigationProperties(navigationProperties);
+
         DatabaseContext.Set<TEntity>().Remove(entity);
-        var count = DatabaseContext.SaveChanges();
+        DatabaseContext.SaveChanges();
     }
 
-    public async Task<IQueryable<TEntity>> FindAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IQueryable<TEntity>> FindAllAsync(CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(navigationProperties);
 
         return await Task.FromResult(DatabaseContext
             .Set<TEntity>()
@@ -73,9 +80,10 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
             .AsQueryable());
     }
 
-    public async Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default)
+    public async Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(navigationProperties);
 
         if (key == null)
             return null;
@@ -85,44 +93,59 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
         if (entity == null)
             return null;
 
-        DatabaseContext.Entry(entity).State = EntityState.Detached;
+        DatabaseContext.Set<TEntity>().AsNoTracking();
 
         return entity;
     }
 
-    public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(navigationProperties);
 
-        DatabaseContext.Entry(entity).State = EntityState.Added;
-        await DatabaseContext.SaveChangesAsync();
+        DatabaseContext.Set<TEntity>().Add(entity);
+        await DatabaseContext.SaveChangesAsync(cancellationToken);
 
         return entity;
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(navigationProperties);
 
-        DatabaseContext.Entry(entity).State = EntityState.Modified;
-        await DatabaseContext.SaveChangesAsync();
+        DatabaseContext.Set<TEntity>().Update(entity);
+        await DatabaseContext.SaveChangesAsync(cancellationToken);
 
         return entity;
     }
 
-    public async Task RemoveAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task RemoveAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(navigationProperties);
 
         DatabaseContext.Set<TEntity>().Remove(entity);
-        await DatabaseContext.SaveChangesAsync();
+        await DatabaseContext.SaveChangesAsync(cancellationToken);
     }
 
-    private void ThrowIfCancellationRequested(CancellationToken cancellationToken)
+    private static void ThrowIfCancellationRequested(CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {
             throw new TaskCanceledException();
+        }
+    }
+
+    private void IncludeNavigationProperties(string[] navigationProperties)
+    {
+        var dbSet = DatabaseContext.Set<TEntity>();
+        if (navigationProperties != null)
+        {
+            foreach (var navigation in navigationProperties)
+            {
+                dbSet.Include(navigation);
+            }
         }
     }
 }
