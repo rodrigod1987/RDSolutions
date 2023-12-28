@@ -43,9 +43,10 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public TEntity Insert(TEntity entity, params string[] navigationProperties)
     {
-        IncludeNavigationProperties(navigationProperties);
+        var dbEntity = DatabaseContext.Set<TEntity>();
+        IncludeNavigationProperties(dbEntity, navigationProperties);
 
-        DatabaseContext.Set<TEntity>().Add(entity);
+        DatabaseContext.Entry(entity).State = EntityState.Added;
         DatabaseContext.SaveChanges();
 
         return entity;
@@ -53,9 +54,10 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public TEntity Update(TEntity entity, params string[] navigationProperties)
     {
-        IncludeNavigationProperties(navigationProperties);
+        var dbEntity = DatabaseContext.Set<TEntity>();
+        IncludeNavigationProperties(dbEntity, navigationProperties);
 
-        DatabaseContext.Set<TEntity>().Update(entity);
+        DatabaseContext.Entry(entity).State = EntityState.Modified;
         DatabaseContext.SaveChanges();
 
         return entity;
@@ -63,19 +65,22 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public void Remove(TEntity entity, params string[] navigationProperties)
     {
-        IncludeNavigationProperties(navigationProperties);
+        var dbEntity = DatabaseContext.Set<TEntity>();
+        IncludeNavigationProperties(dbEntity, navigationProperties);
 
-        DatabaseContext.Set<TEntity>().Remove(entity);
+        DatabaseContext.Entry(entity).State = EntityState.Deleted;
         DatabaseContext.SaveChanges();
     }
 
     public async Task<IQueryable<TEntity>> FindAllAsync(CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
-        IncludeNavigationProperties(navigationProperties);
 
-        return await Task.FromResult(DatabaseContext
-            .Set<TEntity>()
+        var dbEntity = DatabaseContext.Set<TEntity>();
+
+        IncludeNavigationProperties(dbEntity, navigationProperties);
+
+        return await Task.FromResult(dbEntity
             .AsNoTracking()
             .AsQueryable());
     }
@@ -83,7 +88,6 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
     public async Task<TEntity> FindAsync(TKey key, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
         ThrowIfCancellationRequested(cancellationToken);
-        IncludeNavigationProperties(navigationProperties);
 
         if (key == null)
             return null;
@@ -93,17 +97,21 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
         if (entity == null)
             return null;
 
-        DatabaseContext.Set<TEntity>().AsNoTracking();
+        var dbEntity = DatabaseContext.Set<TEntity>();
+        IncludeNavigationProperties(dbEntity, navigationProperties);
+        dbEntity.AsNoTracking();
 
         return entity;
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
-        ThrowIfCancellationRequested(cancellationToken);
-        IncludeNavigationProperties(navigationProperties);
+        var dbEntity = DatabaseContext.Set<TEntity>();
 
-        DatabaseContext.Set<TEntity>().Add(entity);
+        ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(dbEntity, navigationProperties);
+
+        DatabaseContext.Entry(entity).State = EntityState.Added;
         await DatabaseContext.SaveChangesAsync(cancellationToken);
 
         return entity;
@@ -111,10 +119,12 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
-        ThrowIfCancellationRequested(cancellationToken);
-        IncludeNavigationProperties(navigationProperties);
+        var dbEntity = DatabaseContext.Set<TEntity>();
 
-        DatabaseContext.Set<TEntity>().Update(entity);
+        ThrowIfCancellationRequested(cancellationToken);
+        IncludeNavigationProperties(dbEntity, navigationProperties);
+
+        DatabaseContext.Entry(entity).State = EntityState.Modified;
         await DatabaseContext.SaveChangesAsync(cancellationToken);
 
         return entity;
@@ -122,10 +132,12 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public async Task RemoveAsync(TEntity entity, CancellationToken cancellationToken = default, params string[] navigationProperties)
     {
+        var dbEntity = DatabaseContext.Set<TEntity>();
+        
         ThrowIfCancellationRequested(cancellationToken);
-        IncludeNavigationProperties(navigationProperties);
+        IncludeNavigationProperties(dbEntity, navigationProperties);
 
-        DatabaseContext.Set<TEntity>().Remove(entity);
+        DatabaseContext.Entry(entity).State = EntityState.Deleted;
         await DatabaseContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -137,14 +149,13 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
         }
     }
 
-    private void IncludeNavigationProperties(string[] navigationProperties)
+    private static void IncludeNavigationProperties(DbSet<TEntity> entity, string[] navigationProperties)
     {
-        var dbSet = DatabaseContext.Set<TEntity>();
         if (navigationProperties != null)
         {
             foreach (var navigation in navigationProperties)
             {
-                dbSet.Include(navigation);
+                entity.Include(navigation);
             }
         }
     }
