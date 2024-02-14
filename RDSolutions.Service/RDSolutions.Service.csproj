@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <BaseOutputPath>C:\RDSolutions\Bin</BaseOutputPath>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.4.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\RDSolutions.Repository\RDSolutions.Repository.csproj" />
