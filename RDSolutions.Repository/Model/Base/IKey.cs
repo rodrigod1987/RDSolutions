@@ -4,3 +4,4 @@ public interface IKey<TKey>
 {
     public TKey Id { get; set; }
 }
+

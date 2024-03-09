@@ -1,15 +1,14 @@
 ﻿using RDSolutions.Repository.Model.Base;
 using RDSolutions.Repository.Repository;
-using RDSolutions.Service;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JoasCar.Cadastros.Service.Cadastros;
+namespace RDSolutions.Service.Impl;
 
-public abstract class ServiceBase<TEntity, TKey> : IService<TEntity, TKey> 
-    where TEntity : class, IKey<TKey>
+public abstract class ServiceBase<TEntity, TKey> : IService<TEntity, TKey>
+        where TEntity : class, IKey<TKey>
 {
     private readonly IRepository<TEntity, TKey> _repository;
 
@@ -73,3 +72,4 @@ public abstract class ServiceBase<TEntity, TKey> : IService<TEntity, TKey>
             await _repository.RemoveAsync(entity, cancellationToken);
     }
 }
+

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace RDSolutions.Common
+namespace RDSolutions.Common;
+
+public interface IRegistrable
 {
-    public interface IRegistrable
-    {
-        void Register(IServiceCollection services);
-    }
+    void Register(IServiceCollection services);
 }

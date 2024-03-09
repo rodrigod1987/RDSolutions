@@ -5,13 +5,13 @@ using System.Linq;
 namespace RDSolutions.Repository.Model;
 
 public class Pageable<T> where T : class
-{ 
+{
     public Pageable(int page, int size, decimal total, IEnumerable<T> content)
     {
         if (page < 1)
             throw new ArgumentException($"{nameof(page)} could not be less than 1.");
 
-        if (size < 1)   
+        if (size < 1)
             throw new ArgumentException($"{nameof(size)} could not be less than 1.");
 
         Page = page;
@@ -21,7 +21,7 @@ public class Pageable<T> where T : class
         Content = content
             .Skip((page - 1) * size)
             .Take(size)
-            .ToList(); 
+            .ToList();
     }
 
     /// <summary>

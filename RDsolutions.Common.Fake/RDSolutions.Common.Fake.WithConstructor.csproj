@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <BaseOutputPath>C:\RDSolutions\Bin</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RDSolutions.Repository\RDSolutions.Repository.csproj" />
+    <ProjectReference Include="..\RDSolutions.Common\RDSolutions.Common.csproj" />
   </ItemGroup>
 </Project>
