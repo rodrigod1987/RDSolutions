@@ -3,7 +3,7 @@
 echo "----------Setting project variables"
 BASE_PATH="C:\\Rodrigo\\Projetos\\.NET\\RDSolutions"
 echo $BASE_PATH
-BIN_PATH="C:\\RDSolutions\\Bin\\Debug\\"
+BIN_PATH="C:\\RDSolutions\\Bin\\Release\\"
 echo $BIN_PATH
 SOURCE="C:\\NugetPackages\\"
 echo $SOURCE
