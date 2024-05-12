@@ -15,7 +15,7 @@ public static class ServicesExtensions
         //o argumento services. Com isso consigo isolar em cada um dos m�dulos aquilo que eu devo injetar como depend�ncia.
         var allAssemblies = new List<Assembly>();
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var files = Directory.GetFiles(path, "*.dll");
+        var files = Directory.GetFiles(path, $"{namespaceStartWith}*.dll");
 
         foreach (string dll in files) 
         {
@@ -34,16 +34,30 @@ public static class ServicesExtensions
 
             foreach (Type registrable in myTypes)
             {
-                if (registrable.GetInterface(nameof(IRegistrable)) != null)
+                if (registrable.GetInterface(nameof(IRegistrable)) is not null)
                 {
                     try
                     {
+                        var constructor = registrable
+                            .GetConstructors()
+                            .FirstOrDefault();
+
+                        object[] parameters = constructor
+                            .GetParameters()
+                            .Select(type => type.ParameterType)
+                            .ToArray();
+
+                        if (parameters.Length > 0)
+                        {
+                            throw new Exception("Parameters are not allowed for register dependencies");
+                        }
+
                         var myClass = Activator.CreateInstance(registrable) as IRegistrable;
                         myClass.Register(services);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine(string.Format("The type {0} should not have a parametrized constructor.", registrable.FullName));
+                        Console.WriteLine(string.Format("The type {0} should not have more than one constructor. {1}", registrable.FullName, ex.Message)); ;
                         throw;
                     }
                 }

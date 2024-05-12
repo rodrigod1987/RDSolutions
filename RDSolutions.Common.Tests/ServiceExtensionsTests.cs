@@ -31,7 +31,6 @@ public class ServiceExtensionsTests
     {
         var serviceCollection = new ServiceCollection() as IServiceCollection;
         var configuration = new WithConstructor.Configuration { MyProperty = 10 };
-
         serviceCollection.AddSingleton(configuration);
 
         Should.Throw<Exception>(() => serviceCollection.RegisterComponents("RDSolutions.Common.Fake.WithConstructor"));
